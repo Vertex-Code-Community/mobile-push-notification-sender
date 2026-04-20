@@ -1,3 +1,13 @@
 .planning/
 .idea/
 **/firebase-service-account.json
+
+# Build outputs (under src/, tests/, samples/, etc.)
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# Test / tooling
+TestResults/
+[Tt]emp/
