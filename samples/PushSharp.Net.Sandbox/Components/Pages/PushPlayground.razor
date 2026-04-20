@@ -1,0 +1,138 @@
+@page "/"
+@rendermode InteractiveServer
+
+<PageTitle>PushSharp Sandbox</PageTitle>
+
+<div class="push-playground container-fluid container-lg pb-5">
+    <h1 class="mb-3">PushSharp.Net playground</h1>
+    <p class="text-muted">Local in-memory store. Configure FCM in <code>appsettings.json</code> and place <code>firebase-service-account.json</code> in the project root.</p>
+
+    <div class="row g-3 mb-4">
+        <div class="col-12">
+            <div class="card border-secondary">
+                <div class="card-header">Log</div>
+                <div class="card-body p-2">
+                    <pre class="log-panel mb-0">@string.Join("\n", _log)</pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-3">
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header">Register one device</div>
+                <div class="card-body">
+                    <div class="mb-2">
+                        <label class="form-label">User ID (optional)</label>
+                        <input class="form-control" @bind="_regUserId" />
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">FCM token</label>
+                        <input class="form-control" @bind="_regToken" />
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">Tags (comma-separated)</label>
+                        <input class="form-control" @bind="_regTags" placeholder="premium, region:eu" />
+                    </div>
+                    <button class="btn btn-primary" disabled="@_busy" @onclick="RegisterOneAsync">Save to store</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header">Bulk registration (multiple rows)</div>
+                <div class="card-body">
+                    <p class="small text-muted mb-2">Each line: <code>userId|deviceToken|tag1,tag2</code> (userId and tags may be empty; token is required).</p>
+                    <textarea class="form-control font-monospace mb-2" rows="5" @bind="_bulkRegLines"></textarea>
+                    <button class="btn btn-primary" disabled="@_busy" @onclick="RegisterBulkAsync">Register all lines</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header">Send to one token</div>
+                <div class="card-body">
+                    <input class="form-control mb-2" placeholder="Token" @bind="_oneToken" />
+                    <input class="form-control mb-2" placeholder="Title" @bind="_oneTitle" />
+                    <input class="form-control mb-2" placeholder="Body" @bind="_oneBody" />
+                    <button class="btn btn-success" disabled="@_busy" @onclick="SendOneTokenAsync">Send</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header">Send to multiple tokens (single batch request)</div>
+                <div class="card-body">
+                    <textarea class="form-control font-monospace mb-2" rows="4" placeholder="One token per line" @bind="_batchTokens"></textarea>
+                    <input class="form-control mb-2" placeholder="Title" @bind="_batchTitle" />
+                    <input class="form-control mb-2" placeholder="Body" @bind="_batchBody" />
+                    <button class="btn btn-success" disabled="@_busy" @onclick="SendBatchTokensAsync">SendBatchAsync</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header">Send to one user (by userId in store)</div>
+                <div class="card-body">
+                    <input class="form-control mb-2" placeholder="User ID" @bind="_userOneId" />
+                    <input class="form-control mb-2" placeholder="Title" @bind="_userOneTitle" />
+                    <input class="form-control mb-2" placeholder="Body" @bind="_userOneBody" />
+                    <button class="btn btn-outline-success" disabled="@_busy" @onclick="SendToUserOneAsync">SendToUserAsync</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header">Send to multiple users</div>
+                <div class="card-body">
+                    <input class="form-control mb-2" placeholder="User IDs (comma-separated)" @bind="_userManyIds" />
+                    <input class="form-control mb-2" placeholder="Title" @bind="_userManyTitle" />
+                    <input class="form-control mb-2" placeholder="Body" @bind="_userManyBody" />
+                    <button class="btn btn-outline-success" disabled="@_busy" @onclick="SendToManyUsersAsync">Loop SendToUserAsync</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header">Send by one tag</div>
+                <div class="card-body">
+                    <input class="form-control mb-2" placeholder="Tag" @bind="_tagOne" />
+                    <input class="form-control mb-2" placeholder="Title" @bind="_tagOneTitle" />
+                    <input class="form-control mb-2" placeholder="Body" @bind="_tagOneBody" />
+                    <button class="btn btn-outline-primary" disabled="@_busy" @onclick="SendByOneTagAsync">SendByTagAsync</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header">Send by multiple tags</div>
+                <div class="card-body">
+                    <input class="form-control mb-2" placeholder="Tags (comma or newline separated)" @bind="_tagMany" />
+                    <input class="form-control mb-2" placeholder="Title" @bind="_tagManyTitle" />
+                    <input class="form-control mb-2" placeholder="Body" @bind="_tagManyBody" />
+                    <button class="btn btn-outline-primary" disabled="@_busy" @onclick="SendByManyTagsAsync">Loop SendByTagAsync</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card h-100 border-warning">
+                <div class="card-header bg-warning-subtle">Send to all registered devices</div>
+                <div class="card-body">
+                    <p class="small text-danger">Warning: all tokens in the store.</p>
+                    <input class="form-control mb-2" placeholder="Title" @bind="_allTitle" />
+                    <input class="form-control mb-2" placeholder="Body" @bind="_allBody" />
+                    <button class="btn btn-danger" disabled="@_busy" @onclick="SendToAllAsync">SendToAllAsync</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

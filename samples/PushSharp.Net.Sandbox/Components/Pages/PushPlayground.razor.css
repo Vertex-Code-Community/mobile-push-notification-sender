@@ -1,0 +1,17 @@
+.push-playground .log-panel {
+    max-height: 22rem;
+    overflow: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-size: 0.8125rem;
+    line-height: 1.45;
+    padding: 0.75rem 1rem;
+    border-radius: 0.375rem;
+    background: var(--bs-secondary-bg, #f8f9fa);
+    border: 1px solid var(--bs-border-color, #dee2e6);
+    color: var(--bs-body-color, #212529);
+}
+
+.push-playground .card.border-warning {
+    border-width: 2px;
+}

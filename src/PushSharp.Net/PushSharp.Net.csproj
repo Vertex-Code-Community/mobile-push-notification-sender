@@ -1,0 +1,46 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>12</LangVersion>
+    <IsPackable>true</IsPackable>
+
+    <!-- NuGet metadata -->
+    <PackageId>PushSharp.Net</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>TODO</Authors>
+    <Description>Send push notifications to iOS and Android with a single API call.</Description>
+    <PackageTags>push;notifications;fcm;apns;ios;android</PackageTags>
+    <RepositoryUrl>https://github.com/TODO/PushSharp.Net</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+
+    <!-- Symbol package -->
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+
+    <!-- SourceLink -->
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+
+    <!-- Trimming compatibility -->
+    <IsTrimmable>true</IsTrimmable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="PushSharp.Net.Tests" />
+    <InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Google.Apis.Auth" Version="1.73.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.*" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="8.*" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="8.*" />
+    <PackageReference Include="Microsoft.Extensions.Options.DataAnnotations" Version="8.*" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.*" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.*" PrivateAssets="All" />
+  </ItemGroup>
+
+</Project>
