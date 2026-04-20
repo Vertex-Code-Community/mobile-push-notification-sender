@@ -1,1 +1,3 @@
 .planning/
+.idea/
+**/firebase-service-account.json
